@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--侧滑菜单的属性-->
+  <declare-styleable name="ParallaxNavigationDrawer">
+    <attr format="enum" name="drawerMode">
+      <enum name="left" value="1"/>
+      <enum name="right" value="2"/>
+      <enum name="both" value="3"/>
+      <enum name="none" value="0"/>
+    </attr>
+    <attr format="dimension" name="drawerPadding"/>
+    <attr format="integer" name="duration"/>
+    <attr format="boolean" name="parallax"/>
+    <attr format="float" name="mainContentAlpha"/>
+    <attr format="color" name="mainContentShadowColor"/>
+    <attr format="boolean" name="mainContentCloseOnTouch"/>
+    <attr format="boolean" name="allowDragging"/>
+  </declare-styleable>
+</resources>
