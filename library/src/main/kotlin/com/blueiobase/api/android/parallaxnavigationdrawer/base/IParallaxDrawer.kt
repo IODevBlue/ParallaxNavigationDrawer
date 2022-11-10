@@ -6,20 +6,10 @@ import androidx.annotation.FloatRange
 import com.blueiobase.api.android.parallaxnavigationdrawer.annotation.DrawerMode
 import com.blueiobase.api.android.parallaxnavigationdrawer.listener.OnDrawerCloseListener
 import com.blueiobase.api.android.parallaxnavigationdrawer.listener.OnDrawerOpenListener
-import com.blueiobase.api.android.parallaxnavigationdrawer.listener.OnDrawerStateListener
 
 
 interface IParallaxDrawer {
 
-    companion object {
-        const val DRAWER_MODE_NONE = 0
-
-        const val DRAWER_MODE_LEFT = 1
-
-        const val DRAWER_MODE_RIGHT = 2
-
-        const val DRAWER_MODE_BOTH = 3
-    }
 
     /**
      *
