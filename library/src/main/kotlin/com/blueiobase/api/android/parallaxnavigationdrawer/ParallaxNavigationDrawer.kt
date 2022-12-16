@@ -283,6 +283,19 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     }
 
     /**
+     * A default `onBackPressed()` operation which closes either the left or right drawer and returns a [Boolean]
+     * indicating the closed state of both drawers.
+     * @return `true` if both left and right drawers are closed, `false` if either drawer was open.
+     */
+    fun onBackPressed(): Boolean {
+        return if (isLeftDrawerOpen || isRightDrawerOpen) {
+            closeLeftDrawer()
+            closeRightDrawer()
+            false
+        } else true
+    }
+
+    /**
      * Sets the [onDrawerStateChangedListener].
      * @param init A receiver function to receive results of listener callbacks
      */
