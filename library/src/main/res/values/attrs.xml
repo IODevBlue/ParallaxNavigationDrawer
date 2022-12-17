@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!--侧滑菜单的属性-->
+  <!-- -->
   <declare-styleable name="ParallaxNavigationDrawer">
+    <!-- Drawer mode represents drawers that can be opened and accessible. -->
     <attr format="enum" name="drawerMode">
+      <!-- Only the left drawer can be opened. -->
       <enum name="left" value="1"/>
+      <!-- Only the right drawer can be opened. -->
       <enum name="right" value="2"/>
+      <!-- Both the left and right drawers can be opened. -->
       <enum name="both" value="3"/>
+      <!-- Drawers are deactivated. -->
       <enum name="none" value="0"/>
     </attr>
-    <attr format="dimension" name="drawerPadding"/>
+    <!-- The padding applied on the main content view when the drawer is open. -->
+    <attr format="dimension" name="mainContentPadding"/>
+    <!-- The time it takes for the drawer to complete its open and close animation. -->
     <attr format="integer" name="duration"/>
+    <!--  Enables or disables the parallax feature. -->
     <attr format="boolean" name="parallax"/>
-    <attr format="float" name="mainContentAlpha"/>
+    <!-- The alpha value of the shadow applied to the main content view when the drawer is open. -->
+    <attr format="float" name="mainContentShadowAlpha"/>
+    <!-- The color of the shadow applied to the main content view when the drawer is open. -->
     <attr format="color" name="mainContentShadowColor"/>
+    <!--Enables the close-on-touch feature which closes the drawer when the main content view is touched. -->
     <attr format="boolean" name="mainContentCloseOnTouch"/>
-    <attr format="boolean" name="allowDragging"/>
+    <!-- Enables swiping and dragging on the main content view to reveal the left drawer, right drawer or both. -->
+    <attr format="boolean" name="enableSwiping"/>
   </declare-styleable>
 </resources>

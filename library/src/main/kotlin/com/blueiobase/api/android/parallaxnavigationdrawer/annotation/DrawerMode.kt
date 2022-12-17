@@ -10,4 +10,9 @@ import com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDra
     ParallaxNavigationDrawer.DRAWER_MODE_NONE
 )
 @Retention(AnnotationRetention.SOURCE)
-annotation class DrawerMode
+/**
+ * Annotation representing the drawer mode which signifies drawers that can be accessible and opened.
+ * @author IO DevBlue
+ * @since 1.0.0
+ */
+internal annotation class DrawerMode

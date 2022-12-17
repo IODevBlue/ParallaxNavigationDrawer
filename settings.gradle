@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Parallax Navigation Drawer"
-include ':app'
+include ':sample'
 include ':library'
