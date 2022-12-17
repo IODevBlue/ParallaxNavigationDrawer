@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_blue"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            >
+            <ImageButton
+                android:id="@+id/left_drawer_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_menu_24"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/image_button"
+                />
+
+            <ImageButton
+                android:id="@+id/right_drawer_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_more_horiz_24"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end"
+                android:contentDescription="@string/image_button"
+                />
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:layout_below="@id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/image_view"
+        android:src="@drawable/perfect"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:fontFamily="serif-monospace"
+        android:text="@string/maller_copyright"
+        android:layout_below="@id/app_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        />
+
+    <ImageButton
+        android:id="@+id/github_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="25dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:contentDescription="@string/image_button"
+        android:src="@drawable/ic_github"
+        android:background="@drawable/circle_bg"
+        />
+
+</RelativeLayout>
