@@ -38,14 +38,44 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         private const val DEFAULT_DURATION = 700
     }
 
-    /** Interface to listen to changes in the [ParallaxNavigationDrawer] open and close state.*/
+    /**
+     * Interface to listen to changes in the open and close states of both the left and right drawers simultaneously.
+     * @see OnLeftDrawerStateChangedListener
+     * @see OnRightDrawerStateChangedListener
+     */
     interface OnDrawerStateChangedListener {
         /**
-         * Callback invoked when drawer state changes for the left or right drawer.
-         * @param isLeftDrawerOpen `true` if left drawer is open, `false` is otherwise.
-         * @param isRightDrawerOpen `true` if right drawer is open, `false` is otherwise.
+         * Callback invoked when drawer state changes for both the left or right drawer.
+         * @param isLeftDrawerOpen `true` if left drawer is open, `false` if otherwise.
+         * @param isRightDrawerOpen `true` if right drawer is open, `false` if otherwise.
          */
         fun onDrawerStateChanged(isLeftDrawerOpen: Boolean, isRightDrawerOpen: Boolean)
+    }
+
+    /**
+     * Interface to listen to changes in the open and close state of the left drawer.
+     * @see OnDrawerStateChangedListener
+     * @see OnRightDrawerStateChangedListener
+     */
+    interface OnLeftDrawerStateChangedListener {
+        /**
+         * Callback invoked when drawer state changes for the left drawer.
+         * @param isOpen `true` if left drawer is open, `false` if otherwise.
+         */
+        fun onDrawerStateChanged(isOpen: Boolean)
+    }
+
+    /**
+     * Interface to listen to changes in the open and close state of the right drawer.
+     * @see OnDrawerStateChangedListener
+     * @see OnLeftDrawerStateChangedListener
+     */
+    interface OnRightDrawerStateChangedListener {
+        /**
+         * Callback invoked when drawer state changes for the right drawer.
+         * @param isOpen `true` if right drawer is open, `false` if otherwise.
+         */
+        fun onDrawerStateChanged(isOpen: Boolean)
     }
 
     /** The [View] representing the left drawer. */
@@ -82,7 +112,10 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     /** Enables the parallax feature for the [ParallaxNavigationDrawer]. */
     var parallax = false
 
-    /** The alpha value of the shadow applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open. */
+    /**
+     * The alpha value of the shadow applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open.
+     * @see mainContentShadowColor
+     */
     @FloatRange(from = 0.0, to = 1.0)
     var mainContentShadowAlpha = 0F
 
@@ -90,6 +123,7 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
      * The color of the shadow applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open.
      *
      * Default is **BLACK**.
+     * @see mainContentShadowAlpha
      */
     @ColorInt
     var mainContentShadowColor = 0
@@ -105,8 +139,12 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     /** Enables swiping and dragging on the [mainContentView] to reveal either the [leftDrawerView] or [rightDrawerView]. */
     var enableSwiping = false
 
-    /** Listener for drawer open and close states. */
+    /** Listener for the open and close states for both the left and right drawers. */
     var onDrawerStateChangedListener: OnDrawerStateChangedListener? = null
+    /** Listener for the open and close states of the left drawer. */
+    var onLeftDrawerStateChangedListener: OnLeftDrawerStateChangedListener? = null
+    /** Listener for the open and close states of the right drawer. */
+    var onRightDrawerStateChangedListener: OnRightDrawerStateChangedListener? = null
 
     /** The width of the screen. */
     private val screenWidth = Util.screenWidth(context)
@@ -118,11 +156,11 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     private var mainContentWidth = 0
     /** The height occupied by the [mainContentView]. */
     private var mainContentHeight = 0
-    /** Holds the last known X position during a touch event. */
+    /** Holds the last known X position during an [onTouchEvent] */
     private var mLastX = 0
-    /** Holds the last known X position during an `onInterceptTouchEvent()`. */
+    /** Holds the last known X position during an [onInterceptTouchEvent].*/
     private var mLastXIntercept  = 0
-    /** Holds the last known Y position during an `onInterceptTouchEvent()`. */
+    /** Holds the last known Y position during an [onInterceptTouchEvent]. */
     private var mLastYIntercept = 0
     /** The difference between the current X position during a touch event and the [mLastX]. */
     private var mDx = 0
@@ -130,6 +168,8 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     private var isLeftDrawerOpen = false
     /** [Boolean] to validate if the [rightDrawerView] is open. */
     private var isRightDrawerOpen = false
+    /** Control variable to store the currently open drawer. `L`- Left, `R`- Right and `N`- None. */
+    private var whichOpen = 'N'
 
     /** The [Scroller] needed to perform the swiping. */
     private val mScroller = Scroller(context)
@@ -288,8 +328,10 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
      * @return `true` if both left and right drawers are closed, `false` if either drawer was open.
      */
     fun onBackPressed(): Boolean {
-        return if (isLeftDrawerOpen || isRightDrawerOpen) {
+        return if (isLeftDrawerOpen) {
             closeLeftDrawer()
+            false
+        } else if(isRightDrawerOpen) {
             closeRightDrawer()
             false
         } else true
@@ -298,6 +340,8 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     /**
      * Sets the [onDrawerStateChangedListener].
      * @param init A receiver function to receive results of listener callbacks
+     * @see setOnLeftDrawerStateChangedListener
+     * @see setOnRightDrawerStateChangedListener
      */
     fun setOnDrawerStateChangedListener( init: (left: Boolean, right: Boolean) -> Unit) {
         val x = object: OnDrawerStateChangedListener {
@@ -307,6 +351,37 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         }
         onDrawerStateChangedListener = x
     }
+
+    /**
+     * Sets the [OnLeftDrawerStateChangedListener].
+     * @param init A receiver function to receive results of listener callbacks
+     * @see setOnDrawerStateChangedListener
+     * @see setOnRightDrawerStateChangedListener
+     */
+    fun setOnLeftDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
+        val x = object: OnLeftDrawerStateChangedListener {
+            override fun onDrawerStateChanged(isOpen: Boolean) {
+                init(isOpen)
+            }
+        }
+        onLeftDrawerStateChangedListener = x
+    }
+
+    /**
+     * Sets the [OnRightDrawerStateChangedListener].
+     * @param init A receiver function to receive results of listener callbacks
+     * @see setOnDrawerStateChangedListener
+     * @see setOnLeftDrawerStateChangedListener
+     */
+    fun setOnRightDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
+        val x = object: OnRightDrawerStateChangedListener {
+            override fun onDrawerStateChanged(isOpen: Boolean) {
+                init(isOpen)
+            }
+        }
+        onRightDrawerStateChangedListener = x
+    }
+
 
     /** Opens or closes the [leftDrawerView] depending on its current state. */
     fun toggleLeftDrawer() {
@@ -318,14 +393,14 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     fun openLeftDrawer() {
         if (drawerMode == DRAWER_MODE_RIGHT || drawerMode == DRAWER_MODE_NONE) return
         isLeftDrawerOpen = true
-        scrollDest(-maxSwipeWidth, 0)
+        scrollDest(-maxSwipeWidth)
     }
 
     /** Closes the [leftDrawerView]. */
     fun closeLeftDrawer() {
         if (drawerMode == DRAWER_MODE_RIGHT || drawerMode == DRAWER_MODE_NONE) return
         isLeftDrawerOpen = false
-        scrollDest(0, 0)
+        scrollDest(0)
     }
 
     /** Opens or closes the [rightDrawerView] depending on its current state. */
@@ -338,14 +413,14 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     fun openRightDrawer() {
         if (drawerMode == DRAWER_MODE_LEFT || drawerMode == DRAWER_MODE_NONE) return
         isRightDrawerOpen = true
-        scrollDest(maxSwipeWidth, 0)
+        scrollDest(maxSwipeWidth)
     }
 
     /** Closes the [rightDrawerView]. */
     fun closeRightDrawer() {
         if (drawerMode == DRAWER_MODE_LEFT || drawerMode == DRAWER_MODE_NONE) return
         isRightDrawerOpen = false
-        scrollDest(0, 0)
+        scrollDest(0)
     }
 
 
@@ -485,19 +560,31 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     /**
      * Internal function which uses the [mScroller] to move the [ParallaxNavigationDrawer] to these coordinates.
      * @param destX The x coordinates.
-     * @param destY The y coordinates.
      */
-    private fun scrollDest(destX: Int, destY: Int) {
+    private fun scrollDest(destX: Int) {
         val scrollX = scrollX
         val deltaX = destX - scrollX
         val time = abs(deltaX * 1.0f / (maxSwipeWidth * 1.0f / duration)).toInt()
-        mScroller.startScroll(scrollX, 0, deltaX, destY, time)
+        mScroller.startScroll(scrollX, 0, deltaX, 0, time)
         invalidate()
-        onDrawerStateChangedListener?.apply {
-            when(destX) {
-                -maxSwipeWidth -> onDrawerStateChanged(isLeftDrawerOpen = true, isRightDrawerOpen = false)
-                0 -> onDrawerStateChanged(isLeftDrawerOpen = false, isRightDrawerOpen = false)
-                maxSwipeWidth -> onDrawerStateChanged( isLeftDrawerOpen = false, isRightDrawerOpen = true)
+        when(destX) {
+            -maxSwipeWidth -> {
+                onDrawerStateChangedListener?.onDrawerStateChanged(isLeftDrawerOpen = true, isRightDrawerOpen = false)
+                onLeftDrawerStateChangedListener?.onDrawerStateChanged(true)
+                whichOpen = 'L'
+            }
+            0 -> {
+                onDrawerStateChangedListener?.onDrawerStateChanged(isLeftDrawerOpen = false, isRightDrawerOpen = false)
+                when (whichOpen) {
+                    'L' -> onLeftDrawerStateChangedListener?.onDrawerStateChanged(false)
+                    'R' -> onRightDrawerStateChangedListener?.onDrawerStateChanged(false)
+                }
+                whichOpen = 'N'
+            }
+            maxSwipeWidth -> {
+                onDrawerStateChangedListener?.onDrawerStateChanged( isLeftDrawerOpen = false, isRightDrawerOpen = true)
+                onRightDrawerStateChangedListener?.onDrawerStateChanged(true)
+                whichOpen = 'R'
             }
         }
     }
@@ -521,7 +608,7 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
                 }
             }
         } else if (drawerMode == DRAWER_MODE_BOTH) {
-            if (!isLeftDrawerOpen && !isRightDrawerOpen) { //
+            if (!isLeftDrawerOpen && !isRightDrawerOpen) {
                 if (scrollX >= maxSwipeWidth / 2) {
                     openRightDrawer()
                 } else {
