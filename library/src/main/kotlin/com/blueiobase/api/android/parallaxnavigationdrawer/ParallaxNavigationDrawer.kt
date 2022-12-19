@@ -352,37 +352,6 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         onDrawerStateChangedListener = x
     }
 
-    /**
-     * Sets the [OnLeftDrawerStateChangedListener].
-     * @param init A receiver function to receive results of listener callbacks
-     * @see setOnDrawerStateChangedListener
-     * @see setOnRightDrawerStateChangedListener
-     */
-    fun setOnLeftDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
-        val x = object: OnLeftDrawerStateChangedListener {
-            override fun onDrawerStateChanged(isOpen: Boolean) {
-                init(isOpen)
-            }
-        }
-        onLeftDrawerStateChangedListener = x
-    }
-
-    /**
-     * Sets the [OnRightDrawerStateChangedListener].
-     * @param init A receiver function to receive results of listener callbacks
-     * @see setOnDrawerStateChangedListener
-     * @see setOnLeftDrawerStateChangedListener
-     */
-    fun setOnRightDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
-        val x = object: OnRightDrawerStateChangedListener {
-            override fun onDrawerStateChanged(isOpen: Boolean) {
-                init(isOpen)
-            }
-        }
-        onRightDrawerStateChangedListener = x
-    }
-
-
     /** Opens or closes the [leftDrawerView] depending on its current state. */
     fun toggleLeftDrawer() {
         if (isLeftDrawerOpen) closeLeftDrawer()
@@ -423,6 +392,35 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         scrollDest(0)
     }
 
+    /**
+     * Sets the [OnLeftDrawerStateChangedListener].
+     * @param init A receiver function to receive results of listener callbacks
+     * @see setOnDrawerStateChangedListener
+     * @see setOnRightDrawerStateChangedListener
+     */
+    fun setOnLeftDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
+        val x = object: OnLeftDrawerStateChangedListener {
+            override fun onDrawerStateChanged(isOpen: Boolean) {
+                init(isOpen)
+            }
+        }
+        onLeftDrawerStateChangedListener = x
+    }
+
+    /**
+     * Sets the [OnRightDrawerStateChangedListener].
+     * @param init A receiver function to receive results of listener callbacks
+     * @see setOnDrawerStateChangedListener
+     * @see setOnLeftDrawerStateChangedListener
+     */
+    fun setOnRightDrawerStateChangedListener(init: (isOpen: Boolean) -> Unit) {
+        val x = object: OnRightDrawerStateChangedListener {
+            override fun onDrawerStateChanged(isOpen: Boolean) {
+                init(isOpen)
+            }
+        }
+        onRightDrawerStateChangedListener = x
+    }
 
     /**
      * Internal function to initialize the [ParallaxNavigationDrawer] using the provided [AttributeSet].
