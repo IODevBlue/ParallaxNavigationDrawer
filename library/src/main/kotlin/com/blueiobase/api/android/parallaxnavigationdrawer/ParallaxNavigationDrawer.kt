@@ -18,6 +18,116 @@ import kotlin.math.abs
 
 /**
  * This is a Navigation Drawer that supports sliding from the left and right ends of the screen with parallax effect.
+ *
+ * To use `ParallaxNavigationDrawer`, you will need three layout files:
+ * - One representing the left navigation drawer.
+ * - One representing the right navigation drawer.
+ * - One representing the main User Interface content.
+ *
+ * Suppose these are the layouts...
+ * - The Left drawer content layout representing the left navigation drawer (`drawer_left.xml`)
+ * ```
+ *  <?xml version="1.0" encoding="utf-8"?>
+ *     <RelativeLayout
+ *         xmlns:android="http://schemas.android.com/apk/res/android"
+ *         android:orientation="vertical"
+ *         android:layout_width="match_parent"
+ *         android:layout_height="match_parent"
+ *         >
+ *
+ *         <ImageView/>
+ *
+ *     </RelativeLayout>
+ * ```
+ * - The Right drawer content layout representing the right navigation drawer (`drawer_right.xml`)
+ * ```
+ * <?xml version="1.0" encoding="utf-8"?>
+ *     <LinearLayout
+ *         xmlns:android="http://schemas.android.com/apk/res/android"
+ *         android:orientation="vertical"
+ *         android:layout_width="match_parent"
+ *         android:layout_height="match_parent"
+ *         >
+ *
+ *         <ImageView/>
+ *
+ *     </LinearLayout>
+ * ```
+ * - Main content layout representing the Main User Interface (`drawer_main.xml`)
+ * ```XML
+ * <?xml version="1.0" encoding="utf-8"?>
+ *     <RelativeLayout
+ *        xmlns:android="http://schemas.android.com/apk/res/android"
+ *        android:orientation="vertical"
+ *        android:layout_width="match_parent"
+ *        android:layout_height="match_parent"
+ *        >
+ *
+ *        <com.google.android.material.appbar.AppBarLayout/>
+ *
+ *        <ImageView/>
+ *
+ *        <TextView/>
+ *
+ *        <ImageButton/>
+ *
+ *     </RelativeLayout>
+ * ```
+ * Navigate to your `Activity` or `Fragment` XML layout file (e.g `activity_main.xml`), add a `ParallaxNavigationDrawer` widget and include the layouts in the following order
+ * - Left navigation drawer layout
+ * - Right navigation drawer layout
+ * - Main content layout
+ * ```
+ * <com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer
+ *       android:id="@+id/pnd"
+ *       android:layout_width="match_parent"
+ *       android:layout_height="match_parent"
+ *       android:background="@color/white"
+ *       app:mainContentShadowAlpha="0.5"
+ *       app:mainContentCloseOnTouch="true"
+ *       app:drawerMode="both"
+ *       app:parallax="true"
+ *       >
+ *
+ *       <include layout="@layout/drawer_left"/>
+ *
+ *       <include layout="@layout/drawer_right"/>
+ *
+ *       <include layout="@layout/drawer_main"/>
+ *
+ * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
+ * ```
+ * ***NOTE:*** The layouts must be in the specified order (Left, Right, Main) and there must be no more than ***3*** layout files included in the `ParallaxNavigationDrawer` widget unless
+ * an [IllegalStateException] would be thrown.
+ *
+ * To utilize one of either drawers, add the [drawerMode] attribute to the `ParallaxNavigationDrawer` widget specifying either [left][DRAWER_MODE_LEFT] or [right][DRAWER_MODE_RIGHT] enum value.
+ * Then `<include/>` at least two layouts.
+ * - One layout representing the navigation drawer.
+ * - The other representing the main content User Interface.
+ *
+ * ***NOTE:*** The layout included last would be considered the main User Interface content.
+ * ```
+ * <com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer
+ *       android:id="@+id/pnd"
+ *       android:layout_width="match_parent"
+ *       android:layout_height="match_parent"
+ *       android:background="@color/white"
+ *       app:mainContentShadowAlpha="0.5"
+ *       app:mainContentCloseOnTouch="true"
+ *       app:drawerMode="right"
+ *       app:parallax="true"
+ *       >
+ *
+ *       <include layout="@layout/drawer_right"/>
+ *
+ *       <include layout="@layout/drawer_main"/>
+ *
+ * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
+ * ```
+ * Specifying [none][DRAWER_MODE_NONE] indicates that drawers are deactivated.
+ *
+ * ***NOTE:*** By default, `ParallaxNavigationDrawer` has the [drawerMode] attribute set to [none][DRAWER_MODE_NONE].
+ * This means it must be explicitly set either in the XML layout file or in the class file.
  * @author IO DevBlue
  * @since 1.0.0
  */
@@ -27,9 +137,9 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     companion object {
         /** Constant indicating that the [ParallaxNavigationDrawer] has no drawers. */
         const val DRAWER_MODE_NONE = 0
-        /** Constant indicating that the [ParallaxNavigationDrawer] has only a left drawer. */
+        /** Constant indicating that the [ParallaxNavigationDrawer] only has  a left drawer. */
         const val DRAWER_MODE_LEFT = 1
-        /** Constant indicating that the [ParallaxNavigationDrawer] has only a right drawer. */
+        /** Constant indicating that the [ParallaxNavigationDrawer] only has a right drawer. */
         const val DRAWER_MODE_RIGHT = 2
         /** Constant indicating that the [ParallaxNavigationDrawer] has both left and right drawers. */
         const val DRAWER_MODE_BOTH = 3
@@ -90,7 +200,11 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     var mainContentView: View? = null
         private set
 
-    /** The current [DrawerMode]. */
+    /**
+     * The current [DrawerMode].
+     *
+     * Default is [DRAWER_MODE_NONE].
+     */
     @DrawerMode
     var drawerMode = DRAWER_MODE_NONE
         set(value) {
@@ -105,19 +219,33 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
             field = value
         }
 
-    /** The padding applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open. */
+    /**
+     * The padding applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open.
+     *
+     * Default is 1/4th of the Screen's total width.
+     */
     var mainContentPadding = 0
-    /** The time it takes for the [ParallaxNavigationDrawer] to complete its open and close animation. */
+    /**
+     * The time it takes for the [ParallaxNavigationDrawer] to complete its open and close animation.
+     *
+     * Default value is **700**
+     */
     var duration = 0
-    /** Enables the parallax feature for the [ParallaxNavigationDrawer]. */
-    var parallax = false
+    /**
+     * Enables the parallax feature for the [ParallaxNavigationDrawer].
+     *
+     * Default is **`true`**
+     */
+    var parallax = true
 
     /**
      * The alpha value of the shadow applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open.
+     *
+     * Default is **0.5F**
      * @see mainContentShadowColor
      */
     @FloatRange(from = 0.0, to = 1.0)
-    var mainContentShadowAlpha = 0F
+    var mainContentShadowAlpha = 0.5F
 
     /**
      * The color of the shadow applied to the [mainContentView] when the [ParallaxNavigationDrawer] is open.
@@ -133,11 +261,19 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
             postInvalidate()
         }
 
-    /** Enables the close-on-touch feature which closes the [ParallaxNavigationDrawer] when the [mainContentView] is touched. */
+    /**
+     * Enables the close-on-touch feature which closes the [ParallaxNavigationDrawer] when a widget on the [mainContentView] is touched.
+     *
+     * Default is **false**
+     */
     var mainContentCloseOnTouch = false
 
-    /** Enables swiping and dragging on the [mainContentView] to reveal either the [leftDrawerView] or [rightDrawerView]. */
-    var enableSwiping = false
+    /**
+     * Enables swiping and dragging on the [mainContentView] to reveal either the [leftDrawerView] or [rightDrawerView].
+     *
+     * Default is **true**
+     */
+    var enableSwiping = true
 
     /** Listener for the open and close states for both the left and right drawers. */
     var onDrawerStateChangedListener: OnDrawerStateChangedListener? = null
