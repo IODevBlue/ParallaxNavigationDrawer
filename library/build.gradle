@@ -2,6 +2,8 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.dokka'
+    id 'signing'
+    id 'maven-publish'
 }
 
 android {
@@ -27,6 +29,74 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+         }
+    }
+}
+
+def releaseVersion = '1.0.0'
+
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = 'io.github.iodevblue'
+                artifactId = 'parallaxnavigationdrawer'
+                version = releaseVersion
+                from components.release
+
+                pom {
+                    name = 'Parallax Navigation Drawer'
+                    description = 'Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.'
+                    url = 'https://github.com/IODevBlue/ParallaxNavigationDrawer.git'
+                    packaging = 'jar'
+
+                    licenses {
+                        license {
+                            name = 'Apache License Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'iodevblue'
+                            name = 'IO DevBlue'
+                            email = 'iodevblue@gmail.com'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/IODevBlue/ParallaxNavigationDrawer.git'
+                        developerConnection = 'scm:git:ssh://github.com/IODevBlue/ParallaxNavigationDrawer.git'
+                        url = 'https://github.com/IODevBlue/ParallaxNavigationDrawer'
+                    }
+                }
+
+            }
+
+        }
+		
+        repositories {
+            def releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            maven {
+                credentials {
+                    username = sonatypeUsername
+                    password = sonatypePassword
+                }
+                url = uri(releaseVersion.endsWith('SNAPSHOT')? snapshotUrl:releaseUrl)
+            }
+        }
+
+    }
+
+    signing {
+        sign publishing.publications.maven
     }
 }
 

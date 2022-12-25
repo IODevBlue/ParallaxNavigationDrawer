@@ -3,19 +3,19 @@ Parallax Navigation Drawer
 
 Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.
 
-[<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/IODevBlue/ParallaxNavigationDrawer?color=%0109B6&style=for-the-badge&label=Current Version">](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases)
+[<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge&label=Current Version">](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases)
 
-<img alt="Repository Size" src="https://img.shields.io/github/repo-size/IODevBlue/ParallaxNavigationDrawer?color=%0109B6&style=for-the-badge">
+<img alt="Repository Size" src="https://img.shields.io/github/repo-size/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">
 
-[<img alt="License" src="https://img.shields.io/github/license/IODevBlue/ParallaxNavigationDrawer?color=%0109B6&style=for-the-badge">](http://www.apache.org/licenses/LICENSE-2.0)
+[<img alt="License" src="https://img.shields.io/github/license/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](http://www.apache.org/licenses/LICENSE-2.0)
 
-[<img alt="GitHub forks" src="https://img.shields.io/github/forks/IODevBlue/ParallaxNavigationDrawer?label=Forks?color=%0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/network/members)
+[<img alt="GitHub Repository stars" src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?style=social?color=0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/stargazers)
 
-<img alt="GitHub Repository stars"src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?style=social?color=%0109B6&style=for-the-badge">
+<img alt="GitHub watchers"src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Watch?color=0109B6&style=for-the-badge">
 
-[<img alt="GitHub Repository stars" src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?style=social?color=%0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/stargazers)
+[<img alt="Gradle version" src="https://img.shields.io/static/v1?label=Gradle version&message=7.5.1&color=0109B6&style=for-the-badge">](https://docs.gradle.org/7.5.1/release-notes)
 
-<img alt="GitHub watchers"src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Watch?color=%0109B6&style=for-the-badge">
+[<img alt="Kotlin version" src="https://img.shields.io/static/v1?label=Kotlin version&message=1.7.10&color=0109B6&style=for-the-badge">](https://kotlinlang.org/docs/whatsnew1720)
 
 Uses
 ----
@@ -25,6 +25,66 @@ Parallax Navigation Drawer can be used to provide left and right navigation draw
 
 Installation
 ------------
+There are several ways to install this library.
+
+1. Grab a JAR artefact from the Maven Central Repository:
+```GROOVY
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.0'
+```
+If it is a snapshot version, add the snapshot Maven Nexus OSS repository:
+```GROOVY
+maven {   
+  url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+}
+```
+Then retrieve a copy:
+```GROOVY
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.0-SNAPSHOT'
+```
+
+2. Grab a JAR or AAR artifact from the [release](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases) section.
+- Place it in `libs` folder in your project module and install in your project.
+```GROOVY
+implementation fileTree(dir:' libs', include:'*jar')
+```
+
+If you do not prefer the compiled JAR and want access to the source files directly:
+
+3. Download the project zip file.
+- Create a new module with name `parallaxnavigationdrawer` in your project.
+- Copy the contents of the `library` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
+- This method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
+Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md)] for more information.
+
+4. If creating a new module is not preferable for your project and you want to have access to the source codes while tightly coupling it to your project, then follow this process:
+- Download the project zip file.
+- Create a new package with name `parallaxnavigationdrawer` in your project.
+- Copy the subpackages and class files from the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the new `parallaxnavigationdrawer` package.
+- Edit the package declaration in each class file accordingly.
+- Copy the contents of the res folder in the project zip into your module's res folder. 
+- Alternatively for convenience and arrangement in an ordered manner, you could create a `sourceSet` dedicated to 3rd party libraries like so:
+```GROOVY
+android {
+  sourceSets {
+    main {
+      res {
+        srcDirs file("src/main/thirdpartyres/").listFiles(),
+                'src/main/thirdpartyres'
+      }
+      java {
+        srcDirs 'src/main/thirdpartylibraries'
+      }
+    }
+  }
+}
+```
+- Then sync project with Gradle.
+- This creates a specialized Gradle source set `thirdpartylibraries` for 3rd party library source files and `thirdpartyres` for 3rd party resource files in the `main` directory.
+- Create a `parallaxnavigationdrawer` subfolder in the `thirdpartyres` folder and copy the resource contents from the library module from the downloaded project zip file into the new subfolder.
+- Copy the contents of the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the `thirdpartylibraries` source set.
+- Again, this method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
+Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md)] for more information.
+
 
 Usage
 -----
