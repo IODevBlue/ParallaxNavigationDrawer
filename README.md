@@ -3,23 +3,12 @@ Parallax Navigation Drawer
 
 Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.
 
-[<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge&label=Current Version">](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases)
-
-<img alt="Repository Size" src="https://img.shields.io/github/repo-size/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">
-
-[<img alt="License" src="https://img.shields.io/github/license/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](http://www.apache.org/licenses/LICENSE-2.0)
-
-[<img alt="GitHub Repository stars" src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?style=social?color=0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/stargazers)
-
-<img alt="GitHub watchers"src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Watch?color=0109B6&style=for-the-badge">
-
-[<img alt="Gradle version" src="https://img.shields.io/static/v1?label=Gradle version&message=7.5.1&color=0109B6&style=for-the-badge">](https://docs.gradle.org/7.5.1/release-notes)
-
-[<img alt="Kotlin version" src="https://img.shields.io/static/v1?label=Kotlin version&message=1.7.10&color=0109B6&style=for-the-badge">](https://kotlinlang.org/docs/whatsnew1720)
+[<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge&label=Current Version">](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases) <img alt="Repository Size" src="https://img.shields.io/github/repo-size/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge"> [<img alt="License" src="https://img.shields.io/github/license/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](http://www.apache.org/licenses/LICENSE-2.0) [<img alt="GitHub Repository stars" src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/stargazers)
+<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Repository Watchers&color=0109B6&style=for-the-badge"> [<img alt="Gradle version" src="https://img.shields.io/static/v1?label=Gradle version&message=7.5.1&color=0109B6&style=for-the-badge">](https://docs.gradle.org/7.5.1/release-notes) [<img alt="Kotlin version" src="https://img.shields.io/static/v1?label=Kotlin version&message=1.7.10&color=0109B6&style=for-the-badge">](https://kotlinlang.org/docs/whatsnew1720)
 
 Uses
 ----
-Parallax Navigation Drawer can be used to provide left and right navigation drawers. Each drawer can contain dynamic contents.
+Parallax Navigation Drawer can be used to provide left and right navigation drawers. Each drawer can contain dynamic content.
 
 <p align="center"><img src="/art/demo1.gif" alt="Parallax Navigation Drawer"></p>
 
@@ -59,14 +48,14 @@ implementation fileTree(dir:' libs', include:'*jar')
 
 If you do not prefer the compiled JAR and want access to the source files directly:
 
-3. Download the project zip file.
+3. [Download](https://github.com/IODevBlue/ParallaxNavigationDrawer/archive/refs/heads/main.zip) the project zip file.
 - Create a new module with name `parallaxnavigationdrawer` in your project.
 - Copy the contents of the `library` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
 - This method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
-Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md)] for more information.
+Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
 4. If creating a new module is not preferable for your project and you want to have access to the source codes while tightly coupling it to your project, then follow this process:
-- Download the project zip file.
+- [Download](https://github.com/IODevBlue/ParallaxNavigationDrawer/archive/refs/heads/main.zip) the project zip file.
 - Create a new package with name `parallaxnavigationdrawer` in your project.
 - Copy the subpackages and class files from the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the new `parallaxnavigationdrawer` package.
 - Edit the package declaration in each class file accordingly.
@@ -92,7 +81,7 @@ android {
 - Create a `parallaxnavigationdrawer` subfolder in the `thirdpartyres` folder and copy the resource contents from the library module from the downloaded project zip file into the new subfolder.
 - Copy the contents of the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the `thirdpartylibraries` source set.
 - Again, this method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
-Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md)] for more information.
+Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
 
 Usage
@@ -172,7 +161,7 @@ Navigate to your `Activity` or `Fragment` XML layout file (e.g `activity_main.xm
 
         <include layout="@layout/drawer_main"/>
 
-    </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
+</com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
 ```
 ***NOTE:*** The layouts ***MUST*** be in the specified order (Left, Right, Main) and there ***MUST*** be no more than ***3*** layout files included in the `ParallaxNavigationDrawer` widget unless
 an `IllegalStateException` would be thrown.
@@ -198,9 +187,10 @@ Then <include/> at least two layouts.
 
         <include layout="@layout/drawer_main"/>
 
-    </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
+</com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
 ```
 Specifying `none` indicates that drawers are deactivated.
+
 ***NOTE:*** By default, `ParallaxNavigationDrawer` has the `drawerMode` attribute set to `none`. This means it must be explicitly set either in the XML layout file or in the class file.
 
 To open the left drawer:
@@ -273,7 +263,7 @@ private val parallaxNavigationDrawer = ParallaxNavigationDrawer(context)
 val layoutInflater = LayoutInflater.from(context)
 val leftDrawer = layoutInflater.inflate(R.layout.drawer_left, parallaxNavigationDrawer)
 val rightDrawer = layoutInflater.inflate(R.layout.drawer_right, parallaxNavigationDrawer)
-val mainContent = layoutInflater.inflate(R.layout.drawer_main, ParallaxNavigationDrawer)
+val mainContent = layoutInflater.inflate(R.layout.drawer_main, parallaxNavigationDrawer)
 ```
 Or if the `View` objects representing the drawers already exist, then each can be added to the `ParallaxNavigationDrawer` instance.
 ***NOTE:*** `ParallaxNavigationDrawer` can only host a maximum 3 `View` objects. 
@@ -286,9 +276,10 @@ parallaxNavigationDrawer.apply {
 }
 ```
 The `index` in the `addView()` method signifies the position of each `View` added to the `ParallaxNavigationDrawer`.
-0 - Left Drawer
-1 - Right Drawer
-2 - Main User Interface content
+- 0 = Left Drawer
+- 1 = Right Drawer
+- 2 = Main User Interface content
+
 ***NOTE:*** The `View` objects ***MUST*** be inflated with the `ParallaxNavigationDrawer` instance or added to it in this manner 
 => Left, Right, Main.
 The order must be maintained for conformity.
@@ -313,11 +304,11 @@ Java Interoperability
 ---------------------
 `ParallaxNavigationDrawer` is completely interoperable with Java projects.
 
-Retrieve a `ParallaxNavigationDrawer` from an inflated layout
+Retrieve a `ParallaxNavigationDrawer` from an inflated layout:
 ```JAVA
 ParallaxNavigationDrawer parallaxNavigationDrawer = findViewById(R.id.pnd);
 ```
-Or create using an instance using a `Context`
+Or create using an instance using a `Context`:
 ```JAVA
 ParallaxNavigationDrawer parallaxNavigationDrawer = new ParallaxNavigationDrawer(context);
 ```
@@ -382,22 +373,24 @@ Configurations:
 Contributions
 -------------
 Contributors are welcome!
+
 ***NOTE:** This repository is split into two branches:
 - [main](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/main) branch
 - [development](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/development) branch
+
 All developing implementations and proposed changes are pushed to the [development](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/development) branch 
 and finalized updates are pushed to the [main](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/main) branch.
 
 To note if current developments are being made, there would be more commits in the [development](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/development) branch than in the [main](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/main) branch.
 
-Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md)] for more information.
+Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
 Changelog
 ---------
 * **1.0.0**
     * Initial release
 
-More version history can be gotten from the [Change log](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/main/CHANGELOG.md)] file.
+More version history can be gotten from the [Change log](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/main/CHANGELOG.md) file.
 
 License
 =======
