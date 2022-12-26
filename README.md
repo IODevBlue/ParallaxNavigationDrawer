@@ -28,8 +28,17 @@ Installation
 There are several ways to install this library.
 
 1. Grab a JAR artefact from the Maven Central Repository:
+- On Gradle
 ```GROOVY
 implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.0'
+```
+- On Apache Maven
+```XML
+<dependency>
+  <groudId> io.github.iodevblue </groudId>
+  <artifactId> parallaxnavigationdrawer </artifactId>
+  <version> 1.0.0 </version>
+</dependency>
 ```
 If it is a snapshot version, add the snapshot Maven Nexus OSS repository:
 ```GROOVY

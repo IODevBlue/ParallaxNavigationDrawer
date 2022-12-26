@@ -48,6 +48,7 @@ afterEvaluate {
                 from components.release
                 artifact androidJavadocJar
                 artifact androidSourcesJar
+                artifact androidJar
                 pom {
                     name = 'Parallax Navigation Drawer'
                     description = 'Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.'
@@ -119,6 +120,10 @@ task androidSourcesJar(type: Jar) {
 task androidJavadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     getArchiveClassifier().set('javadoc')
     from android.sourceSets.main.kotlin.srcDirs
+}
+
+task androidJar(type: Jar) {
+    from android.sourceSets.main.kotlin.sourceFiles
 }
 
 dependencies {
