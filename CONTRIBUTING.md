@@ -7,7 +7,7 @@ Contributing
 
 <img alt="Number of pull requests" src="https://img.shields.io/github/issues-pr-raw/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge"> <img alt="Closed pull requests" src="https://img.shields.io/github/issues-pr-closed-raw/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">
 
-<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/IODevBlue/ParallaxNavigationDrawer/development?color=0109B6&style=for-the-badge">
+<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">
 
 <img alt="Last commit for development" src="https://img.shields.io/github/last-commit/IODevBlue/ParallaxNavigationDrawer/development?color=0109B6&style=for-the-badge">
 
@@ -22,7 +22,7 @@ No tasks available!
 
 Contributions are welcome and encouraged!!
 
-Make a [fork](https://github.com/IODevBlue/:repo/fork) of the repository and send a pull request.
+Make a [fork](https://github.com/IODevBlue/ParallaxNavigationDrawer/fork) of the repository and send a pull request.
 
 Discussions about your code, logical decisions and proposed changes would be made before pushing to the [main](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/main) repository branch.
 

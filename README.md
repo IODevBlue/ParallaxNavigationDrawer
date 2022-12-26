@@ -52,6 +52,7 @@ If you do not prefer the compiled JAR and want access to the source files direct
 - Create a new module with name `parallaxnavigationdrawer` in your project.
 - Copy the contents of the `library` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
 - This method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
+
 Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
 4. If creating a new module is not preferable for your project and you want to have access to the source codes while tightly coupling it to your project, then follow this process:
@@ -81,6 +82,7 @@ android {
 - Create a `parallaxnavigationdrawer` subfolder in the `thirdpartyres` folder and copy the resource contents from the library module from the downloaded project zip file into the new subfolder.
 - Copy the contents of the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the `thirdpartylibraries` source set.
 - Again, this method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
+
 Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
 
