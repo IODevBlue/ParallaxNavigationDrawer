@@ -165,14 +165,15 @@ Navigate to your `Activity` or `Fragment` XML layout file (e.g `activity_main.xm
 
 </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
 ```
-***NOTE:*** The layouts ***MUST*** be in the specified order (Left, Right, Main) and there ***MUST*** be no more than ***3*** layout files included in the `ParallaxNavigationDrawer` widget unless
+**NOTE:** The layouts **MUST** be in the specified order (Left, Right, Main) and there ***MUST*** be no more than ***3*** layout files included in the `ParallaxNavigationDrawer` widget unless
 an `IllegalStateException` would be thrown.
 
 To utilize one of either drawers, add the `drawerMode` attribute to the `ParallaxNavigationDrawer` widget specifying either `left` or `right` enum value.
 Then <include/> at least two layouts. 
 - One layout representing the navigation drawer.
 - The other representing the main content User Interface.
-***NOTE:*** The layout included last would be considered the main User Interface content.
+
+**NOTE:** The layout included last would be considered the main User Interface content.
 ```XML
 <com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer
         android:id="@+id/pnd"
@@ -193,7 +194,7 @@ Then <include/> at least two layouts.
 ```
 Specifying `none` indicates that drawers are deactivated.
 
-***NOTE:*** By default, `ParallaxNavigationDrawer` has the `drawerMode` attribute set to `none`. This means it must be explicitly set either in the XML layout file or in the class file.
+**NOTE:** By default, `ParallaxNavigationDrawer` has the `drawerMode` attribute set to `none`. This means it must be explicitly set either in the XML layout file or in the class file.
 
 To open the left drawer:
 ```KOTLIN
@@ -268,7 +269,8 @@ val rightDrawer = layoutInflater.inflate(R.layout.drawer_right, parallaxNavigati
 val mainContent = layoutInflater.inflate(R.layout.drawer_main, parallaxNavigationDrawer)
 ```
 Or if the `View` objects representing the drawers already exist, then each can be added to the `ParallaxNavigationDrawer` instance.
-***NOTE:*** `ParallaxNavigationDrawer` can only host a maximum 3 `View` objects. 
+
+**NOTE:** `ParallaxNavigationDrawer` can only host a maximum of 3 `View` objects. 
 One for the left drawer, one for the right drawer and one for the main User Interface content.
 ```KOTLIN
 parallaxNavigationDrawer.apply {
@@ -282,7 +284,7 @@ The `index` in the `addView()` method signifies the position of each `View` adde
 - 1 = Right Drawer
 - 2 = Main User Interface content
 
-***NOTE:*** The `View` objects ***MUST*** be inflated with the `ParallaxNavigationDrawer` instance or added to it in this manner 
+**NOTE:** The `View` objects ***MUST*** be inflated with the `ParallaxNavigationDrawer` instance or added to it in this manner 
 => Left, Right, Main.
 The order must be maintained for conformity.
 
@@ -376,7 +378,7 @@ Contributions
 -------------
 Contributors are welcome!
 
-***NOTE:** This repository is split into two branches:
+**NOTE:** This repository is split into two branches:
 - [main](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/main) branch
 - [development](https://github.com/IODevBlue/ParallaxNavigationDrawer/tree/development) branch
 

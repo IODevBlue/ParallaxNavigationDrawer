@@ -29,10 +29,10 @@ Discussions about your code, logical decisions and proposed changes would be mad
 Concerning Issues
 -----------------
 - Before creating an issue, please verify if a pre-existing and similar issue already exists. 
-- If an issue is closed and problem persists, you can reopen that same issue or create a entirely new issue.
+- If an issue is closed and problem persists, you can reopen that same issue or create an entirely new issue.
 - Persistent bugs can be better illustrated using a unit/integrated test, demo project, JPG/JPEG file, GIF animation, stack traces and logs. 
 
-***NOTE:*** When posting code blocks, logs or stack traces etc, Please use Github flavoured markdown syntax to improve readability.
+**NOTE:** When posting code blocks, logs or stack traces etc, please use Github flavoured markdown syntax to improve readability.
 
 For Kotlin code blocks, KDoc comments with KDoc syntax are preferable.
 
