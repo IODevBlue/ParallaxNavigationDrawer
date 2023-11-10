@@ -13,7 +13,7 @@ Contributing
 
 Current tasks to be completed
 -----------------------------
-No tasks available!
+[ ] Save state of drawer when configuration changes.
 
 - Have a new feature in mind?
 - Want to make changes and improvements to documentations and code?
