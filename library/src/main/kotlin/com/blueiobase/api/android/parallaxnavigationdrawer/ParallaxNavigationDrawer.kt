@@ -447,10 +447,10 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
                 mDx = dx
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (mDx > 0) {
-                    springMotionScrollRight()
-                } else {
-                    springMotionScrollLeft()
+                when(mDx) {
+                    0 -> return false
+                    in 1..Int.MAX_VALUE -> springMotionScrollRight()
+                    else -> springMotionScrollLeft()
                 }
                 mDx = 0
             }
