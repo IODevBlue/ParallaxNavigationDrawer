@@ -35,7 +35,7 @@ kotlin {
 
 dependencies {
 
-    implementation project(':library')
+    implementation project(':parallaxnavigationdrawer')
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.appcompat:appcompat:$app_compat"
     implementation "com.google.android.material:material:$material"

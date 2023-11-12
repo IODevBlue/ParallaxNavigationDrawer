@@ -6,6 +6,8 @@ plugins {
     id 'maven-publish'
 }
 
+def moduleID = 'parallaxnavigationdrawer'
+
 android {
     namespace 'com.blueiobase.api.android.parallaxnavigationdrawer'
 
@@ -51,7 +53,7 @@ afterEvaluate {
                 artifact androidSourcesJar
                 artifact androidJar
                 pom {
-                    name = 'Parallax Navigation Drawer'
+                    name = "$rootProject.name"
                     description = 'Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.'
                     url = 'https://github.com/IODevBlue/ParallaxNavigationDrawer.git'
                     packaging = 'jar'
@@ -103,28 +105,78 @@ afterEvaluate {
 
 
 dokkaHtml {
-    moduleName.set("Parallax Navigation Drawer")
+    moduleName.set(rootProject.name)
     suppressInheritedMembers.set(true)
     offlineMode.set(true)
     dokkaSourceSets {
         configureEach {
-            includes.from("Module.md")
+            includes.from("module.md")
         }
     }
 }
 
-task androidSourcesJar(type: Jar) {
+dokkaJavadoc {
+    moduleName.set(rootProject.name)
+    suppressInheritedMembers.set(true)
+    offlineMode.set(true)
+    dokkaSourceSets {
+        configureEach {
+            includes.from("module.md")
+        }
+    }
+}
+
+tasks.register('androidSourcesJar', Jar) {
     getArchiveClassifier().set('sources')
     from android.sourceSets.main.kotlin.srcDirs
+    doLast {
+        copy {
+            from androidSourcesJar
+            rename("$moduleID" + "-sources.jar", "$moduleID-$releaseVersion" + "-sources.jar")
+            into "$rootProject.projectDir/artefacts/$moduleID/$releaseVersion"
+        }
+    }
 }
 
-task androidJavadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+tasks.register('androidJavadocJar', Jar) {
+    dependsOn dokkaJavadoc
     getArchiveClassifier().set('javadoc')
-    from android.sourceSets.main.kotlin.srcDirs
+    from dokkaJavadoc
+    doLast {
+        copy {
+            from androidJavadocJar
+            rename("$moduleID" + "-javadoc.jar", "$moduleID-$releaseVersion" + "-javadoc.jar")
+            into "$rootProject.projectDir/artefacts/$moduleID/$releaseVersion"
+        }
+    }
 }
 
-task androidJar(type: Jar) {
-    from android.sourceSets.main.kotlin.sourceFiles
+tasks.register('androidJar', Jar) {
+    def path = "build/intermediates/full_jar/release/full.jar"
+    def file = getRootProject().project("$moduleID").file(new File(path))
+    if (!file.exists()) {
+        println("ERROR: $moduleID:- Run the createFullJarRelease task first to create the jar file.")
+        return
+    }
+    from zipTree(file)
+    doLast {
+        copy {
+            from androidJar
+            rename("$moduleID" + ".jar", "$moduleID-$releaseVersion" + ".jar")
+            into "$rootProject.projectDir/artefacts/$moduleID/$releaseVersion"
+        }
+    }
+}
+
+tasks.register('copyHtmlDoc', Copy) {
+    dependsOn dokkaHtml
+    from "build/dokka/html"
+    into "/Users/iodevblue/Documents/Github-Projects/project-docs/api/android/$moduleID/html"
+}
+tasks.register('copyJavadoc', Copy) {
+    dependsOn dokkaJavadoc
+    from "build/dokka/javadoc"
+    into "/Users/iodevblue/Documents/Github-Projects/project-docs/api/android/$moduleID/javadoc"
 }
 
 dependencies {
