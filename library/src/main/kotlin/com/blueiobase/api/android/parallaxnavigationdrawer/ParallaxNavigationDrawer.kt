@@ -5,10 +5,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Scroller
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -25,7 +27,7 @@ import kotlin.math.abs
  * - One representing the main User Interface content.
  *
  * Suppose these are the layouts...
- * - The Left drawer content layout representing the left navigation drawer (`drawer_left.xml`)
+ * - The Left drawer content layout representing the left navigation drawer (`drawer_left_port.xml.xml`)
  * ```
  *  <?xml version="1.0" encoding="utf-8"?>
  *     <RelativeLayout
@@ -39,7 +41,7 @@ import kotlin.math.abs
  *
  *     </RelativeLayout>
  * ```
- * - The Right drawer content layout representing the right navigation drawer (`drawer_right.xml`)
+ * - The Right drawer content layout representing the right navigation drawer (`drawer_right_port.xml.xml`)
  * ```
  * <?xml version="1.0" encoding="utf-8"?>
  *     <LinearLayout
@@ -53,7 +55,7 @@ import kotlin.math.abs
  *
  *     </LinearLayout>
  * ```
- * - Main content layout representing the Main User Interface (`drawer_main.xml`)
+ * - Main content layout representing the Main User Interface (`drawer_main_port.xml.xml`)
  * ```XML
  * <?xml version="1.0" encoding="utf-8"?>
  *     <RelativeLayout
@@ -89,11 +91,11 @@ import kotlin.math.abs
  *       app:parallax="true"
  *       >
  *
- *       <include layout="@layout/drawer_left"/>
+ *       <include layout="@layout/drawer_left_port.xml"/>
  *
- *       <include layout="@layout/drawer_right"/>
+ *       <include layout="@layout/drawer_right_port.xml"/>
  *
- *       <include layout="@layout/drawer_main"/>
+ *       <include layout="@layout/drawer_main_port.xml"/>
  *
  * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
  * ```
@@ -118,9 +120,9 @@ import kotlin.math.abs
  *       app:parallax="true"
  *       >
  *
- *       <include layout="@layout/drawer_right"/>
+ *       <include layout="@layout/drawer_right_port.xml"/>
  *
- *       <include layout="@layout/drawer_main"/>
+ *       <include layout="@layout/drawer_main_port.xml"/>
  *
  * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
  * ```
@@ -458,6 +460,46 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         return true
     }
 
+    override fun onSaveInstanceState(): Parcelable {
+        return InternalSavedState(super.onSaveInstanceState()).apply {
+            isLeftOpen = isLeftDrawerOpen
+            isRightOpen = isRightDrawerOpen
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if(state !is InternalSavedState) {
+            super.onRestoreInstanceState(state)
+            return
+        }
+        var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+        (state as? InternalSavedState)?.apply {
+            if(isLeftOpen || isRightOpen) {
+                val onRestoreAction = if(isLeftOpen) {
+                    { openLeftDrawer() }
+                } else {
+                    { openRightDrawer() }
+                }
+                onGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+                    onRestoreAction()
+                    viewTreeObserver?.let {
+                        if (it.isAlive) {
+                            it.removeOnGlobalLayoutListener(onGlobalLayoutListener)
+                        }
+                    }
+                }
+                viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutListener)
+            }
+        }
+        super.onRestoreInstanceState(state)
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
     /**
      * A default `onBackPressed()` operation which closes either the left or right drawer and returns a [Boolean]
      * indicating the closed state of both drawers.
@@ -558,6 +600,12 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         onRightDrawerStateChangedListener = x
     }
 
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PRIVATE FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
     /**
      * Internal function to initialize the [ParallaxNavigationDrawer] using the provided [AttributeSet].
      * @param attrs [AttributeSet] configurations for this [ParallaxNavigationDrawer].
@@ -857,5 +905,20 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         }
         scrollBy(-dx, 0)
         invalidateContent()
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PRIVATE CLASSES
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** Internal class to save the state of the [ParallaxNavigationDrawer]. */
+    private class InternalSavedState(
+        /** [Parcelable] to store state to be persisted. */
+        superState: Parcelable?): BaseSavedState(superState) {
+        var isLeftOpen = false
+        var isRightOpen = false
     }
 }

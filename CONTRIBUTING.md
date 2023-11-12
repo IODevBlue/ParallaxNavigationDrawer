@@ -13,8 +13,9 @@ Contributing
 
 Current tasks to be completed
 -----------------------------
-- [ ] Save state of drawer when configuration changes.
+- [ ] Parallax Navigation Drawer for Jetpack Compose.
 
+- [x] Save state of drawer when configuration changes.
 
 - Have a new feature in mind?
 - Want to make changes and improvements to documentations and code?

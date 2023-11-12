@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
         return if (parallaxNavigationDrawer.onBackPressed()) super.onNavigateUp() else false
     }
