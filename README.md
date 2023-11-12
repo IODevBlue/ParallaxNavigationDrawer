@@ -19,14 +19,14 @@ There are several ways to install this library.
 1. Grab a JAR artefact from the Maven Central Repository:
 - On Gradle
 ```GROOVY
-implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.0'
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.1'
 ```
 - On Apache Maven
 ```XML
 <dependency>
   <groudId> io.github.iodevblue </groudId>
   <artifactId> parallaxnavigationdrawer </artifactId>
-  <version> 1.0.0 </version>
+  <version> 1.0.1 </version>
 </dependency>
 ```
 If it is a snapshot version, add the snapshot Maven Nexus OSS repository:
@@ -37,7 +37,7 @@ maven {
 ```
 Then retrieve a copy:
 ```GROOVY
-implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.0-SNAPSHOT'
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.1-SNAPSHOT'
 ```
 
 2. Grab a JAR or AAR artifact from the [release](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases) section.
@@ -52,36 +52,6 @@ If you do not prefer the compiled JAR and want access to the source files direct
 - Create a new module with name `parallaxnavigationdrawer` in your project.
 - Copy the contents of the `library` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
 - This method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
-
-Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
-
-4. If creating a new module is not preferable for your project and you want to have access to the source codes while tightly coupling it to your project, then follow this process:
-- [Download](https://github.com/IODevBlue/ParallaxNavigationDrawer/archive/refs/heads/main.zip) the project zip file.
-- Create a new package with name `parallaxnavigationdrawer` in your project.
-- Copy the subpackages and class files from the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the new `parallaxnavigationdrawer` package.
-- Edit the package declaration in each class file accordingly.
-- Copy the contents of the res folder in the project zip into your module's res folder. 
-- Alternatively for convenience and arrangement in an ordered manner, you could create a `sourceSet` dedicated to 3rd party libraries like so:
-```GROOVY
-android {
-  sourceSets {
-    main {
-      res {
-        srcDirs file("src/main/thirdpartyres/").listFiles(),
-                'src/main/thirdpartyres'
-      }
-      java {
-        srcDirs 'src/main/thirdpartylibraries'
-      }
-    }
-  }
-}
-```
-- Then sync project with Gradle.
-- This creates a specialized Gradle source set `thirdpartylibraries` for 3rd party library source files and `thirdpartyres` for 3rd party resource files in the `main` directory.
-- Create a `parallaxnavigationdrawer` subfolder in the `thirdpartyres` folder and copy the resource contents from the library module from the downloaded project zip file into the new subfolder.
-- Copy the contents of the `com.blueiobase.api.android.parallaxnavigationdrawer` package from the downloaded project zip file into the `thirdpartylibraries` source set.
-- Again, this method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
 
 Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
 
@@ -210,10 +180,10 @@ parallaxNavigationDrawer.toggleLeftDrawer()
 ```
 
 You can utilize the `onBackPressed()` function which closes either the left or right drawer and returns a boolean indicating the closed state of both drawers.
-This can be implemented in the overridden `onBackPressed()` of an `Activity` class.
+This can be implemented in the overridden `onSupportNavigateUp()` of an `Activity` class.
 ```KOTLIN
-override fun onBackPressed() {
-  if(parallaxNavigationDrawer.onBackPressed()) super.onBackPressed()
+override fun onSupportNavigateUp(): Boolean {
+  return if (parallaxNavigationDrawer.onBackPressed()) super.onNavigateUp() else false
 }
 ```
 
@@ -391,6 +361,10 @@ Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/b
 
 Changelog
 ---------
+* **1.0.1**
+  * Fixed bug where listeners are invoked when any open drawer's content is touched.
+  * Drawer open state now saves across configuration changes.
+
 * **1.0.0**
     * Initial release
 
@@ -399,7 +373,7 @@ More version history can be gotten from the [Change log](https://github.com/IODe
 License
 =======
 ```
-    Copyright 2022 IO DevBlue
+    Copyright 2023 IO DevBlue
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

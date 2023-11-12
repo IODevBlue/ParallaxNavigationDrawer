@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ParallaxNavigationDrawer"
-        tools:targetApi="32">
+        tools:targetApi="34">
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"

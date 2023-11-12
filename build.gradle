@@ -5,6 +5,9 @@ buildscript {
         app_compat = '1.6.1'
         material = '1.10.0'
         kotlin_std  = '1.9.20'
+
+        releaseVersion = '1.0.1-SNAPSHOT'
+
     }
     repositories {
         mavenCentral()

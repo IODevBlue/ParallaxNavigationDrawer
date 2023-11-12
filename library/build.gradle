@@ -39,8 +39,6 @@ kotlin {
     jvmToolchain(17)
 }
 
-def releaseVersion = '1.0.0'
-
 afterEvaluate {
     publishing {
         publications {
