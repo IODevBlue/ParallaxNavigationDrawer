@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/image_view"
         android:src="@drawable/ronaldo"
+        android:paddingBottom="150dp"
         android:scaleType="centerCrop"
         />
 

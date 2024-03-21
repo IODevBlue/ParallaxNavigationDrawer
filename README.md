@@ -4,7 +4,7 @@ Parallax Navigation Drawer
 Parallax Navigation Drawer is a custom Native Android navigation drawer that supports sliding from the left and right ends with parallax effect.
 
 [<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge&label=Current Version">](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases) <img alt="Repository Size" src="https://img.shields.io/github/repo-size/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge"> [<img alt="License" src="https://img.shields.io/github/license/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](http://www.apache.org/licenses/LICENSE-2.0) [<img alt="GitHub Repository stars" src="https://img.shields.io/github/stars/IODevBlue/ParallaxNavigationDrawer?color=0109B6&style=for-the-badge">](https://github.com/IODevBlue/ParallaxNavigationDrawer/stargazers)
-<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Repository Watchers&color=0109B6&style=for-the-badge"> [<img alt="Gradle version" src="https://img.shields.io/static/v1?label=Gradle version&message=8.0&color=0109B6&style=for-the-badge">](https://docs.gradle.org/8.0/release-notes) [<img alt="Kotlin version" src="https://img.shields.io/static/v1?label=Kotlin version&message=1.9.20&color=0109B6&style=for-the-badge">](https://kotlinlang.org/docs/whatsnew1920.html)
+<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/IODevBlue/ParallaxNavigationDrawer?label=Repository Watchers&color=0109B6&style=for-the-badge"> [<img alt="Gradle version" src="https://img.shields.io/static/v1?label=Gradle version&message=8.0&color=0109B6&style=for-the-badge">](https://docs.gradle.org/8.0/release-notes) [<img alt="Kotlin version" src="https://img.shields.io/static/v1?label=Kotlin version&message=1.9.21&color=0109B6&style=for-the-badge">](https://kotlinlang.org/docs/whatsnew1921.html)
 
 Uses
 ----
@@ -19,14 +19,14 @@ There are several ways to install this library.
 1. Grab a JAR artefact from the Maven Central Repository:
 - On Gradle
 ```GROOVY
-implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.1'
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.1.1'
 ```
 - On Apache Maven
 ```XML
 <dependency>
   <groudId> io.github.iodevblue </groudId>
   <artifactId> parallaxnavigationdrawer </artifactId>
-  <version> 1.0.1 </version>
+  <version> 1.1.1 </version>
 </dependency>
 ```
 If it is a snapshot version, add the snapshot Maven Nexus OSS repository:
@@ -37,7 +37,7 @@ maven {
 ```
 Then retrieve a copy:
 ```GROOVY
-implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.0.1-SNAPSHOT'
+implementation 'io.github.iodevblue:parallaxnavigationdrawer:1.1.1-SNAPSHOT'
 ```
 
 2. Grab a JAR or AAR artifact from the [release](https://github.com/IODevBlue/ParallaxNavigationDrawer/releases) section.
@@ -50,7 +50,7 @@ If you do not prefer the compiled JAR and want access to the source files direct
 
 3. [Download](https://github.com/IODevBlue/ParallaxNavigationDrawer/archive/refs/heads/main.zip) the project zip file.
 - Create a new module with name `parallaxnavigationdrawer` in your project.
-- Copy the contents of the `library` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
+- Copy the contents of the `parallaxnavigationdrawer` module from the downloaded project zip file to the new module `parallaxnavigationdrawer`.
 - This method makes the source code accessible. If you do make major or minor improvements to the source code, consider making a pull request or an issue to make a contribution.
 
 Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/development/CONTRIBUTING.md) for more information.
@@ -361,12 +361,14 @@ Check the [Contributing](https://github.com/IODevBlue/ParallaxNavigationDrawer/b
 
 Changelog
 ---------
+* **1.1.1**
+  * Added inertia to make parallax and drawer dragging less sensitive and more smooth on screen.
+  * Fixed bug where drawers do not snap back to closed or open state when released from dragging.
+  * Fixed bug where drawers auto drag to open or closed state when first toggled then dragged.
+
 * **1.0.1**
   * Fixed bug where listeners are invoked when any open drawer's content is touched.
   * Drawer open state now saves across configuration changes.
-
-* **1.0.0**
-    * Initial release
 
 More version history can be gotten from the [Change log](https://github.com/IODevBlue/ParallaxNavigationDrawer/blob/main/CHANGELOG.md) file.
 

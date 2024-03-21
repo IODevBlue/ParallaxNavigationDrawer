@@ -16,7 +16,7 @@
         app:mainContentShadowAlpha="0.5"
         app:mainContentCloseOnTouch="true"
         app:drawerMode="both"
-        app:parallax="true"
+        app:parallax="false"
         >
 
         <include layout="@layout/drawer_left"/>

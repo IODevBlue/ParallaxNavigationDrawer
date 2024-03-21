@@ -57,6 +57,8 @@
         >
 
         <ImageView
+            android:paddingTop="320dp"
+            android:paddingBottom="300dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/image_view"
