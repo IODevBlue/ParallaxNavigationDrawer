@@ -6,7 +6,7 @@ buildscript {
         material = '1.11.0'
         kotlin_std  = '1.9.21'
 
-        releaseVersion = '1.1.1-SNAPSHOT'
+        releaseVersion = '1.1.1'
 
     }
     repositories {

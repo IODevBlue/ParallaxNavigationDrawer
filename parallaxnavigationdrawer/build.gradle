@@ -7,6 +7,8 @@ plugins {
 }
 
 def moduleID = 'parallaxnavigationdrawer'
+def sampleModuleID = "sample"
+
 
 android {
     namespace 'com.blueiobase.api.android.parallaxnavigationdrawer'
@@ -168,12 +170,27 @@ tasks.register('androidJar', Jar) {
     }
 }
 
-tasks.register('copyHtmlDoc', Copy) {
+tasks.register('androidDebugAPKCopy', Copy) {
+    def name = "$sampleModuleID-debug.apk"
+    def path = "build/outputs/apk/debug/$name"
+    def file = rootProject.project("$sampleModuleID").file(new File(path))
+    if (!file.exists()) {
+        println("ERROR: $moduleID:- Run the assembleDebug task first to create the apk file.")
+        return
+    }
+    from(rootProject.project("$sampleModuleID").file(new File("build/outputs/apk/debug/$name")))
+    rename("$name", "$moduleID-$releaseVersion" + ".apk")
+    into "$rootProject.projectDir/artefacts/$moduleID/$releaseVersion"
+}
+
+
+tasks.register('androidCopyHtmlDoc', Copy) {
     dependsOn dokkaHtml
     from "build/dokka/html"
     into "/Users/iodevblue/Documents/Github-Projects/project-docs/api/android/$moduleID/html"
 }
-tasks.register('copyJavadoc', Copy) {
+
+tasks.register('androidCopyJavadoc', Copy) {
     dependsOn dokkaJavadoc
     from "build/dokka/javadoc"
     into "/Users/iodevblue/Documents/Github-Projects/project-docs/api/android/$moduleID/javadoc"
