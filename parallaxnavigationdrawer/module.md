@@ -1,4 +1,4 @@
-#Module library
+#Module parallaxnavigationdrawer
 This module contains the source codes for the Parallax Navigation Drawer library.
 
 It contains the following packages:
@@ -22,7 +22,7 @@ This package holds all annotation based classes used within the Parallax Navigat
 It contains the following classes:
 - DrawerMode
 
-@author IODevBlue &copy; 2022
+@author IODevBlue &copy; 2023
 @since v1.0.0
 
 #Package com.blueiobase.api.android.parallaxnavigationdrawer.util
@@ -31,5 +31,5 @@ This package contains utility classes used within the Parallax Navigation Drawer
 It contains the following classes:
 - Util
 
-@author IODevBlue &copy; 2022
+@author IODevBlue &copy; 2023
 @since v1.0.0

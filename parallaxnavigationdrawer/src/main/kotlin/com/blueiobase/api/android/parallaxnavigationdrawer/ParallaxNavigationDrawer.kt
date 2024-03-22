@@ -5,13 +5,18 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Scroller
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer.Companion.DRAWER_MODE_LEFT
+import com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer.Companion.DRAWER_MODE_NONE
+import com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer.Companion.DRAWER_MODE_RIGHT
 import com.blueiobase.api.android.parallaxnavigationdrawer.annotation.DrawerMode
 import com.blueiobase.api.android.parallaxnavigationdrawer.util.Util
 import kotlin.math.abs
@@ -25,7 +30,7 @@ import kotlin.math.abs
  * - One representing the main User Interface content.
  *
  * Suppose these are the layouts...
- * - The Left drawer content layout representing the left navigation drawer (`drawer_left.xml`)
+ * - The Left drawer content layout representing the left navigation drawer (`drawer_left_port.xml.xml`)
  * ```
  *  <?xml version="1.0" encoding="utf-8"?>
  *     <RelativeLayout
@@ -39,7 +44,7 @@ import kotlin.math.abs
  *
  *     </RelativeLayout>
  * ```
- * - The Right drawer content layout representing the right navigation drawer (`drawer_right.xml`)
+ * - The Right drawer content layout representing the right navigation drawer (`drawer_right_port.xml.xml`)
  * ```
  * <?xml version="1.0" encoding="utf-8"?>
  *     <LinearLayout
@@ -53,7 +58,7 @@ import kotlin.math.abs
  *
  *     </LinearLayout>
  * ```
- * - Main content layout representing the Main User Interface (`drawer_main.xml`)
+ * - Main content layout representing the Main User Interface (`drawer_main_port.xml.xml`)
  * ```XML
  * <?xml version="1.0" encoding="utf-8"?>
  *     <RelativeLayout
@@ -89,11 +94,11 @@ import kotlin.math.abs
  *       app:parallax="true"
  *       >
  *
- *       <include layout="@layout/drawer_left"/>
+ *       <include layout="@layout/drawer_left_port.xml"/>
  *
- *       <include layout="@layout/drawer_right"/>
+ *       <include layout="@layout/drawer_right_port.xml"/>
  *
- *       <include layout="@layout/drawer_main"/>
+ *       <include layout="@layout/drawer_main_port.xml"/>
  *
  * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
  * ```
@@ -118,9 +123,9 @@ import kotlin.math.abs
  *       app:parallax="true"
  *       >
  *
- *       <include layout="@layout/drawer_right"/>
+ *       <include layout="@layout/drawer_right_port.xml"/>
  *
- *       <include layout="@layout/drawer_main"/>
+ *       <include layout="@layout/drawer_main_port.xml"/>
  *
  * </com.blueiobase.api.android.parallaxnavigationdrawer.ParallaxNavigationDrawer>
  * ```
@@ -144,10 +149,56 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         /** Constant indicating that the [ParallaxNavigationDrawer] has both left and right drawers. */
         const val DRAWER_MODE_BOTH = 3
 
+        /**
+         * The damping factor applied to the inertial scrolling velocity.
+         *
+         * Higher values result in quicker deceleration, while lower values produce slower deceleration.
+         *
+         * Adjust this value to achieve the desired level of smoothness and natural motion in the inertial scrolling effect.
+         */
+        private const val INERTIAL_DAMPING_FACTOR = 0.9
+
+        /**
+         * The delay between successive frames of the inertial scrolling animation.
+         *
+         * A shorter delay results in a smoother animation but may consume more system resources, while a longer delay may lead to choppier animation but lighter resource usage.
+         *
+         * Choose a value that provides a good balance between smoothness and performance on the target devices for your application.
+         */
+        private const val INERTIAL_SCROLL_DELAY = 20L
+
+        /**
+         * The minimum amount of movement required to trigger a scroll event.
+         *
+         * This threshold helps filter out small touch movements that may cause unintended scrolling or shaking.
+         *
+         * Adjust this value based on the sensitivity of the touch input on your target devices and user feedback during testing.
+         */
+        private const val TOUCH_THRESHOLD = 5
+
+        /**
+         * The duration over which the inertial scrolling effect occurs.
+         *
+         * This constant determines the time taken for the inertial scroll velocity to decelerate to zero.
+         *
+         * Adjust this value to control the speed and smoothness of the inertial scrolling effect.
+         *
+         * Shorter durations result in faster scrolling, while longer durations produce slower, more gradual scrolling.
+         *
+         * Typical values range from a few hundred milliseconds to a second or more.
+         */
+//        private const val INERTIAL_SCROLL_TIME = 500L
+
+
         /** The default value for the [duration]. */
         private const val DEFAULT_DURATION = 700
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // INTERFACES
+    ///////////////////////////////////////////////////////////////////////////
     /**
      * Interface to listen to changes in the open and close states of both the left and right drawers simultaneously.
      * @see OnLeftDrawerStateChangedListener
@@ -188,6 +239,11 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         fun onDrawerStateChanged(isOpen: Boolean)
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // VARIABLES
+    ///////////////////////////////////////////////////////////////////////////
     /** The [View] representing the left drawer. */
     var leftDrawerView: View? = null
         private set
@@ -274,6 +330,12 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
      * Default is **true**
      */
     var enableSwiping = true
+    /** [Boolean] to validate if the [leftDrawerView] is open. */
+    var isLeftDrawerOpen = false
+        private set
+    /** [Boolean] to validate if the [rightDrawerView] is open. */
+    var isRightDrawerOpen = false
+        private set
 
     /** Listener for the open and close states for both the left and right drawers. */
     var onDrawerStateChangedListener: OnDrawerStateChangedListener? = null
@@ -300,10 +362,6 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     private var mLastYIntercept = 0
     /** The difference between the current X position during a touch event and the [mLastX]. */
     private var mDx = 0
-    /** [Boolean] to validate if the [leftDrawerView] is open. */
-    private var isLeftDrawerOpen = false
-    /** [Boolean] to validate if the [rightDrawerView] is open. */
-    private var isRightDrawerOpen = false
     /** Control variable to store the currently open drawer. `L`- Left, `R`- Right and `N`- None. */
     private var whichOpen = 'N'
 
@@ -316,11 +374,42 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
             style = Paint.Style.FILL
         }
     }
+    /** Runnable to handle inertial scrolling. */
+    private val mScrollRunnable = object : Runnable {
+        override fun run() {
+            // Calculate inertial scroll velocity based on last X position
+//            val velocity = (mLastX - mDx) / INERTIAL_SCROLL_TIME
+            val velocity = mLastX - mDx
+            val dx = (velocity * INERTIAL_DAMPING_FACTOR).toInt() // Apply damping factor
+            if (dx == 0) { // Scroll the view
+                if (mDx < 0) {
+                    springMotionScrollLeft()
+                } else {
+                    springMotionScrollRight()
+                }
+            } else if (dx > 0) {
+                springMotionScrollRight()
+            } else {
+                springMotionScrollLeft()
+            }
+            mDx = mLastX // Update previous X position
+            if (abs(dx) > 0) { // Schedule the next frame
+                postDelayed(this, INERTIAL_SCROLL_DELAY)
+            }
+        }
+    }
+
+
 
     init {
         initAttrs(attrs)
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // OVERRIDE FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
     override fun addView(child: View) {
         validateChildCount()
         super.addView(child)
@@ -391,10 +480,9 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         super.computeScroll()
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.currX, mScroller.currY)
-            leftDrawerView?.let { leftDrawerParallaxOpen() }
-            rightDrawerView?.let { rightDrawerParallaxOpen() }
+            leftDrawerView?.let { leftDrawerParallax() }
+            rightDrawerView?.let { rightDrawerParallax() }
             postInvalidate()
-            invalidateContent()
         }
     }
 
@@ -437,27 +525,69 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!enableSwiping) return false
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> mLastX = event.x.toInt()
+            MotionEvent.ACTION_DOWN -> {
+                mLastX = event.x.toInt()
+                removeCallbacks(mScrollRunnable) // Cancel any ongoing animations or inertial scrolling
+            }
             MotionEvent.ACTION_MOVE -> {
                 val currentX = event.x.toInt()
-                val dx = currentX - mLastX
-                if (dx < 0) scrollLeft(dx)
-                else scrollRight(dx)
-                mLastX = currentX
-                mDx = dx
+               val dx = currentX - mLastX
+                if (abs(dx) > TOUCH_THRESHOLD) { // Apply a touch threshold to prevent small fluctuations
+                    removeCallbacks(mScrollRunnable) // Stop any ongoing animations or inertial scrolling
+                    // Scroll the view
+                }
+                if(dx == 0) {/* no-op */}
+                else if (dx < 0) { scrollLeft(dx) }
+                else { scrollRight(dx) }
+                mLastX = currentX // Update the last X position
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (mDx > 0) {
-                    springMotionScrollRight()
-                } else {
-                    springMotionScrollLeft()
-                }
-                mDx = 0
+                post(mScrollRunnable) // Start inertial scrolling
             }
         }
         return true
     }
 
+    override fun onSaveInstanceState(): Parcelable {
+        return InternalSavedState(super.onSaveInstanceState()).apply {
+            isLeftOpen = isLeftDrawerOpen
+            isRightOpen = isRightDrawerOpen
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if(state !is InternalSavedState) {
+            super.onRestoreInstanceState(state)
+            return
+        }
+        var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+        (state as? InternalSavedState)?.apply {
+            if(isLeftOpen || isRightOpen) {
+                val onRestoreAction = if(isLeftOpen) {
+                    { openLeftDrawer() }
+                } else {
+                    { openRightDrawer() }
+                }
+                onGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+                    onRestoreAction()
+                    viewTreeObserver?.let {
+                        if (it.isAlive) {
+                            it.removeOnGlobalLayoutListener(onGlobalLayoutListener)
+                        }
+                    }
+                }
+                viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutListener)
+            }
+        }
+        super.onRestoreInstanceState(state)
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
     /**
      * A default `onBackPressed()` operation which closes either the left or right drawer and returns a [Boolean]
      * indicating the closed state of both drawers.
@@ -558,6 +688,12 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         onRightDrawerStateChangedListener = x
     }
 
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PRIVATE FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
     /**
      * Internal function to initialize the [ParallaxNavigationDrawer] using the provided [AttributeSet].
      * @param attrs [AttributeSet] configurations for this [ParallaxNavigationDrawer].
@@ -645,13 +781,8 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         }
     }
 
-    /** Redraws and recalculates the drawer. */
-    private fun invalidateContent() {
-        postInvalidate()
-    }
-
-    /** Animates the parallax effect when the [rightDrawerView] opens. */
-    private fun rightDrawerParallaxOpen() {
+    /** Animates the parallax effect when the [rightDrawerView] opens or closes. */
+    private fun rightDrawerParallax() {
         if (!parallax) return
         var rightTranslationX = 2 * (-maxSwipeWidth + scrollX) / 3
         if (scrollX == 0 || scrollX == maxSwipeWidth || scrollX == -maxSwipeWidth) {
@@ -660,8 +791,8 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         rightDrawerView?.translationX = rightTranslationX.toFloat()
     }
 
-    /** Animates the parallax effect when the [leftDrawerView] opens. */
-    private fun leftDrawerParallaxOpen() {
+    /** Animates the parallax effect when the [leftDrawerView] opens or closes. */
+    private fun leftDrawerParallax() {
         if (!parallax) return
         var leftTranslationX = 2 * (maxSwipeWidth + scrollX) / 3
         if (scrollX == 0 || scrollX >= maxSwipeWidth || scrollX <= -maxSwipeWidth) {
@@ -754,7 +885,11 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
                 } else {
                     openLeftDrawer()
                 }
+            } else {
+                springMotionScrollRight()
             }
+        } else {
+            springMotionScrollRight()
         }
     }
 
@@ -789,7 +924,11 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
                 } else {
                     openRightDrawer()
                 }
+            } else {
+                springMotionScrollLeft()
             }
+        } else {
+            springMotionScrollLeft()
         }
     }
 
@@ -801,29 +940,42 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         when (drawerMode) {
             DRAWER_MODE_RIGHT -> {
                 if (isRightDrawerOpen || scrollX - dx >= maxSwipeWidth) {
-                    openRightDrawer()
+//                    openRightDrawer()
+                    if((scrollX - dx) < maxSwipeWidth) {
+                        leftDrawerParallax()
+                        rightDrawerParallax()
+                        scrollBy(-dx, 0)
+                    }
                     return
                 }
-                rightDrawerParallaxOpen()
+                rightDrawerParallax()
             }
             DRAWER_MODE_LEFT -> {
                 if (!isLeftDrawerOpen || scrollX - dx >= 0) {
-                    closeLeftDrawer()
+//                    closeLeftDrawer()
+                    if((scrollX - dx) in -maxSwipeWidth..<0){
+                        scrollBy(-dx, 0)
+                        leftDrawerParallax()
+                    }
                     return
                 }
-                leftDrawerParallaxOpen()
+                leftDrawerParallax()
             }
             DRAWER_MODE_BOTH -> {
                 if (isRightDrawerOpen || scrollX - dx >= maxSwipeWidth) {
-                    openRightDrawer()
+//                    openRightDrawer()
+                    if((scrollX - dx) < maxSwipeWidth) {
+                        leftDrawerParallax()
+                        rightDrawerParallax()
+                        scrollBy(-dx, 0)
+                    }
                     return
                 }
-                leftDrawerParallaxOpen()
-                rightDrawerParallaxOpen()
+                leftDrawerParallax()
+                rightDrawerParallax()
             }
         }
         scrollBy(-dx, 0)
-        invalidateContent()
     }
 
     /**
@@ -834,28 +986,56 @@ class ParallaxNavigationDrawer @JvmOverloads constructor(
         when (drawerMode) {
            DRAWER_MODE_LEFT -> {
                 if (isLeftDrawerOpen || scrollX - dx <= -maxSwipeWidth) {
-                    openLeftDrawer()
+//                    openLeftDrawer()
+                    if(abs(scrollX - dx) < maxSwipeWidth) {
+                        leftDrawerParallax()
+                        rightDrawerParallax()
+                        scrollBy(-dx,0)
+                    }
                     return
                 }
-                leftDrawerParallaxOpen()
+                leftDrawerParallax()
             }
             DRAWER_MODE_RIGHT -> {
                 if (!isRightDrawerOpen || scrollX - dx <= 0) {
-                    closeRightDrawer()
+//                    closeRightDrawer()
+                    if((scrollX - dx) in 0..<maxSwipeWidth){
+                        scrollBy(-dx, 0)
+                        rightDrawerParallax()
+                    }
                     return
                 }
-                rightDrawerParallaxOpen()
+                rightDrawerParallax()
             }
             DRAWER_MODE_BOTH -> {
                 if (isLeftDrawerOpen || scrollX - dx <= -maxSwipeWidth) {
-                    openLeftDrawer()
+//                    openLeftDrawer()
+                    if(abs(scrollX - dx) < maxSwipeWidth) {
+                        leftDrawerParallax()
+                        rightDrawerParallax()
+                        scrollBy(-dx,0)
+                    }
                     return
                 }
-                leftDrawerParallaxOpen()
-                rightDrawerParallaxOpen()
+                leftDrawerParallax()
+                rightDrawerParallax()
             }
         }
         scrollBy(-dx, 0)
-        invalidateContent()
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PRIVATE CLASSES
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** Internal class to save the state of the [ParallaxNavigationDrawer]. */
+    private class InternalSavedState(
+        /** [Parcelable] to store state to be persisted. */
+        superState: Parcelable?): BaseSavedState(superState) {
+        var isLeftOpen = false
+        var isRightOpen = false
     }
 }

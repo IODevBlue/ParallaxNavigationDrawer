@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="drawer_main" type="layout">@layout/drawer_main_port</item>
+    <item name="drawer_left" type="layout">@layout/drawer_left_port</item>
+    <item name="drawer_right" type="layout">@layout/drawer_right_port</item>
+
+</resources>
